@@ -2,16 +2,31 @@ body {
     font-family: Arial, sans-serif;
     max-width: 600px;
     margin: 40px auto;
+    background: #f5f5f5;
 }
 
 .chat {
-    border: 1px solid #ccc;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     padding: 20px;
 }
 
 #messages {
-    min-height: 300px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding: 10px;
+    min-height: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fafafa;
+    margin-bottom: 16px;
 }
+
+.message {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.

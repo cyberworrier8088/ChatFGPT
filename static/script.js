@@ -53,6 +53,17 @@ async function sendMessage() {
     input.value = "";
 
     try {
+
+
+        messages.innerHTML += `
+        <div id="loading" class="loading">
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+`;
+
+
         const res = await fetch("/chat", {
             method: "POST",
             headers: {
@@ -103,3 +114,4 @@ document.getElementById("input").addEventListener("keydown", (event) => {
         sendMessage();
     }
 });
+
