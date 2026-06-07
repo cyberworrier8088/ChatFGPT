@@ -6,14 +6,6 @@ function saveApiKey() {
     alert("API Key saved!");
 }
 
-window.onload = () => {
-    const savedKey = localStorage.getItem("hackclub_api_key");
-
-    if (savedKey) {
-        document.getElementById("apikey").value = savedKey;
-    }
-};
-
 function clearApiKey() {
     localStorage.removeItem("hackclub_api_key");
 
@@ -21,6 +13,14 @@ function clearApiKey() {
 
     alert("API Key removed!");
 }
+
+window.onload = () => {
+    const savedKey = localStorage.getItem("hackclub_api_key");
+
+    if (savedKey) {
+        document.getElementById("apikey").value = savedKey;
+    }
+};
 
 async function sendMessage() {
     const input = document.getElementById("input");
@@ -37,6 +37,15 @@ async function sendMessage() {
         return;
     }
 
+    const model = document.getElementById("modelinput").value;
+
+    if (!model) {
+        alert("Please select a model.");
+        return;
+    }
+
+    const mode = document.getElementById("mode").value;
+
     messages.innerHTML += `
         <p><b>You:</b> ${text}</p>
     `;
@@ -51,7 +60,9 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 message: text,
-                api_key: apiKey
+                api_key: apiKey,
+                model: model,
+                mode: mode
             })
         });
 
@@ -60,6 +71,21 @@ async function sendMessage() {
         messages.innerHTML += `
             <p><b>Bot:</b> ${data.response}</p>
         `;
+
+        if (data.image_url && data.image_url.length > 0) {
+            messages.innerHTML += `
+                <img
+                    src="${data.image_url}"
+                    alt="Generated Image"
+                    style="
+                        max-width:500px;
+                        width:100%;
+                        border-radius:10px;
+                        margin-top:10px;
+                    "
+                >
+            `;
+        }
 
         messages.scrollTop = messages.scrollHeight;
 

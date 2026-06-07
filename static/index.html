@@ -29,6 +29,30 @@
             Clear API Key
         </button>
 
+
+
+    <form id="modelForm">
+    <label for="modelinput">Choose or enter a model:</label>
+    
+    <input list="modelList" id="modelinput" placeholder="Type or select model...">
+    
+    <datalist id="modelList">
+        <option value="nvidia/nemotron-3-nano-30b-a3b:free">
+        <option value="liquid/lfm-2.5-1.2b-thinking:free">
+        <option value="openai/gpt-5.3-codex">
+        <option value="nvidia/nemotron-3-super-120b-a12b:free">
+    </datalist>
+
+    <button type="button" onclick="model()">Submit</button>
+    </form>
+
+    <select name="mode" id="mode">
+        <option value="chat">Chat</option>
+        <option value="image">Image Gen</option>
+    </select>
+
+
+
     </div>
 
     <script src="script.js"></script>

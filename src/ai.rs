@@ -6,59 +6,94 @@ use axum::{
 };
 
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use tower_http::services::ServeDir;
-use serde_json::Value;
 
 #[derive(Deserialize)]
 struct ChatRequest {
     message: String,
     api_key: String,
+    model: String,
+    mode: String,
 }
 
 #[derive(Serialize)]
 struct ChatResponse {
     response: String,
-}
-
-#[derive(Serialize)]
-struct Message {
-    role: String,
-    content: String,
-}
-
-#[derive(Serialize)]
-struct ApiRequest {
-    model: String,
-    messages: Vec<Message>,
+    image_url: String,
 }
 
 async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
     let client = reqwest::Client::new();
 
-    let body = ApiRequest {
-        model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free".to_string(),
-        messages: vec![Message {
-            role: "user".to_string(),
-            content: req.message,
-        }],
-    };
+    // IMAGE MODE (Replicate)
+    if req.mode == "image" {
+        let response = client
+    .post("https://ai.hackclub.com/proxy/v1/replicate/models/retro-diffusion/rd-plus/predictions")
+    .bearer_auth(&req.api_key)
+    .header("Prefer", "wait")
+    .json(&json!({
+        "input": {
+            "style": "classic",
+            "width": 128,
+            "height": 128,
+            "prompt": req.message,
+            "tile_x": false,
+            "tile_y": false,
+            "strength": 0.8,
+            "remove_bg": false,
+            "num_images": 1,
+            "bypass_prompt_expansion": false
+        }
+    }))
+    .send()
+    .await
+    .unwrap();
 
+        let body: Value = response.json().await.unwrap();
+
+        println!("{:#}", body);
+
+        let image_url = body["output"][0]
+            .as_str()
+            .unwrap_or("")
+            .to_string();
+
+        return Json(ChatResponse {
+            response: "Image generated!".to_string(),
+            image_url,
+        });
+    }
+
+    // CHAT MODE (Hack Club AI)
     let response = client
         .post("https://ai.hackclub.com/proxy/v1/chat/completions")
         .bearer_auth(&req.api_key)
-        .json(&body)
+        .json(&json!({
+            "model": req.model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": req.message
+                }
+            ]
+        }))
         .send()
         .await
         .unwrap();
 
     let body: Value = response.json().await.unwrap();
 
-    let answer = body["choices"][0]["message"]["content"].as_str().unwrap_or("No reponse").to_string();
+    println!("{:#}", body);
 
-
+    let answer = body["choices"][0]["message"]["content"]
+        .as_str()
+        .unwrap_or("No response")
+        .to_string();
 
     Json(ChatResponse {
         response: answer,
+        image_url: String::new(),
     })
 }
 
