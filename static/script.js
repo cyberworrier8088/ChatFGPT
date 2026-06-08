@@ -1,4 +1,15 @@
-// === globaly functions :)
+// script.js
+
+
+
+// this is made for fun.
+// this using hack club api
+/// Chat fake GPP
+
+//  enjoy My code :)
+
+
+// === globaly functions :) ====
 
 function openSettings() {
     document.getElementById('popupOverlay').style.display = 'block';
