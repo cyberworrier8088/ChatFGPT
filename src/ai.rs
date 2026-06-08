@@ -1,5 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////////////
+// ai.rs
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
 use axum::{
     extract::Json,
+    http::StatusCode,
     response::IntoResponse,
     routing::post,
     Router,
@@ -28,29 +39,53 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
 
     // IMAGE MODE (Replicate)
     if req.mode == "image" {
-        let response = client
-    .post("https://ai.hackclub.com/proxy/v1/replicate/models/retro-diffusion/rd-plus/predictions")
-    .bearer_auth(&req.api_key)
-    .header("Prefer", "wait")
-    .json(&json!({
-        "input": {
-            "style": "classic",
-            "width": 128,
-            "height": 128,
-            "prompt": req.message,
-            "tile_x": false,
-            "tile_y": false,
-            "strength": 0.8,
-            "remove_bg": false,
-            "num_images": 1,
-            "bypass_prompt_expansion": false
-        }
-    }))
-    .send()
-    .await
-    .unwrap();
+        let response = match client
+            .post("https://ai.hackclub.com/proxy/v1/replicate/models/retro-diffusion/rd-plus/predictions")
+            .bearer_auth(&req.api_key)
+            .header("Prefer", "wait")
+            .json(&json!({
+                "input": {
+                    "style": "classic",
+                    "width": 128,
+                    "height": 128,
+                    "prompt": req.message,
+                    "tile_x": false,
+                    "tile_y": false,
+                    "strength": 0.8,
+                    "remove_bg": false,
+                    "num_images": 1,
+                    "bypass_prompt_expansion": false
+                }
+            }))
+            .send()
+            .await
+        {
+            Ok(resp) => resp,
+            Err(e) => {
+                eprintln!("Image API request failed: {e}");
+                return (
+                    StatusCode::BAD_GATEWAY,
+                    Json(ChatResponse {
+                        response: format!("Failed to reach image API: {e}"),
+                        image_url: String::new(),
+                    }),
+                );
+            }
+        };
 
-        let body: Value = response.json().await.unwrap();
+        let body: Value = match response.json().await {
+            Ok(json) => json,
+            Err(e) => {
+                eprintln!("Failed to parse image API response: {e}");
+                return (
+                    StatusCode::BAD_GATEWAY,
+                    Json(ChatResponse {
+                        response: format!("Invalid response from image API: {e}"),
+                        image_url: String::new(),
+                    }),
+                );
+            }
+        };
 
         println!("{:#}", body);
 
@@ -59,14 +94,17 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
             .unwrap_or("")
             .to_string();
 
-        return Json(ChatResponse {
-            response: "Image generated!".to_string(),
-            image_url,
-        });
+        return (
+            StatusCode::OK,
+            Json(ChatResponse {
+                response: "Image generated!".to_string(),
+                image_url,
+            }),
+        );
     }
 
     // CHAT MODE (Hack Club AI)
-    let response = client
+    let response = match client
         .post("https://ai.hackclub.com/proxy/v1/chat/completions")
         .bearer_auth(&req.api_key)
         .json(&json!({
@@ -80,9 +118,33 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
         }))
         .send()
         .await
-        .unwrap();
+    {
+        Ok(resp) => resp,
+        Err(e) => {
+            eprintln!("Chat API request failed: {e}");
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(ChatResponse {
+                    response: format!("Failed to reach chat API: {e}"),
+                    image_url: String::new(),
+                }),
+            );
+        }
+    };
 
-    let body: Value = response.json().await.unwrap();
+    let body: Value = match response.json().await {
+        Ok(json) => json,
+        Err(e) => {
+            eprintln!("Failed to parse chat API response: {e}");
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(ChatResponse {
+                    response: format!("Invalid response from chat API: {e}"),
+                    image_url: String::new(),
+                }),
+            );
+        }
+    };
 
     println!("{:#}", body);
 
@@ -91,10 +153,13 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
         .unwrap_or("No response")
         .to_string();
 
-    Json(ChatResponse {
-        response: answer,
-        image_url: String::new(),
-    })
+    (
+        StatusCode::OK,
+        Json(ChatResponse {
+            response: answer,
+            image_url: String::new(),
+        }),
+    )
 }
 
 pub async fn ai() {

@@ -29,4 +29,98 @@ body {
     flex-direction: column;
 }
 
-.
+/* Loading animation (bouncing dots) */
+.loading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+}
+
+.loading span {
+    width: 8px;
+    height: 8px;
+    background: #888;
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loading span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+
+
+/* this animtion used for a effect for chat loading :>  */
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(9);
+        opacity: 1;
+    }
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.popup {
+    font-family: Arial, sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.popup #KeyInput {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.popup button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}

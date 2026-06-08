@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Rust Chatbot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatFGPT - Rust Chatbot</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
     <div class="chat">
+        <button onclick="openSettings()">Settings</button>
+
         <h1>Rust Chatbot</h1>
 
         <div id="messages"></div>
@@ -19,17 +24,6 @@
         <button onclick="sendMessage()">
             Send
         </button>
-
-        <input type="password" id="apikey" placeholder="Enter Hack club api key">
-        <button onclick="saveApiKey()">
-            Save API Key
-        </button>
-
-        <button onclick="clearApiKey()">
-            Clear API Key
-        </button>
-
-
 
     <form id="modelForm">
     <label for="modelinput">Choose or enter a model:</label>
@@ -51,10 +45,30 @@
         <option value="image">Image Gen</option>
     </select>
 
+    </div>
 
+
+    <div class="popup-overlay" id="popupOverlay">
+
+    <div class="popup" id="popup">
+
+        <span class="close" id="closePopup">&times;</span>
+
+        <div class="popup-content">
+
+            <p>Enter your Hack Club API Key</p>
+
+            <p>This key is stored locally in your browser and sent to the server for each request.</p>
+
+            <input type="password" placeholder="Your Hack Club API key" id="KeyInput">
+
+            <button onclick="submitForm()">Save Key</button>
+
+        </div>
 
     </div>
 
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
