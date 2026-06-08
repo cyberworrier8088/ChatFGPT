@@ -170,11 +170,16 @@ pub async fn ai() {
         .route("/chat", post(chat))
         .fallback_service(ServeDir::new("static"));
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
-        .await
-        .unwrap();
+    // this for publc Deploying
+    let port = std::env::var("PORT").unwrap_or("3000".to_string());
+    
+    let listener = tokio::net::TcpListener::bind(
+        format!("0.0.0.0:{}", port)
+    )
+.await
+.unwrap();
 
-    println!("Server running at http://127.0.0.1:3000");
+    println!("Server running at working");
 
     axum::serve(listener, app).await.unwrap();
 }
