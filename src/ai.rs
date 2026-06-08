@@ -136,10 +136,11 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
         }
     };
 
+    println!("Status: {}", response.status());
+
     let body: Value = match response.json().await {
         Ok(json) => json,
         Err(e) => {
-            eprintln!("Failed to parse chat API response: {e}");
             return (
                 StatusCode::BAD_GATEWAY,
                 Json(ChatResponse {
@@ -149,8 +150,6 @@ async fn chat(Json(req): Json<ChatRequest>) -> impl IntoResponse {
             );
         }
     };
-
-    println!("{:#}", body);
 
     let answer = body["choices"][0]["message"]["content"]
         .as_str()
