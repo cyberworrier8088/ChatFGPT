@@ -57,3 +57,10 @@ cargo build --release
 ## Project journal ( comming)
 
 To follow major updates and milestones, see [`journal.md`](./journal.md).
+
+
+
+
+## Screenshots
+
+<img width="1917" height="903" alt="image" src="img7.png" />
