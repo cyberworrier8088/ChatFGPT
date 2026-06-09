@@ -70,3 +70,6 @@ To follow major updates and milestones, see [`journal.md`](./journal.md).
 <img width="1917" height="903" alt="Demo" src="demo/img4.png" />
 <img width="1917" height="903" alt="Demo" src="demo/img5.png" />
 <img width="1917" height="903" alt="Demo" src="demo/img6.png" />
+
+
+## thankyou for reading my README.md
