@@ -64,3 +64,9 @@ To follow major updates and milestones, see [`journal.md`](./journal.md).
 ## Screenshots
 
 <img width="1917" height="903" alt="image" src="demo/img7.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img1.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img2.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img3.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img4.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img5.png" />
+<img width="1917" height="903" alt="Demo" src="demo/img6.png" />
